@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class PlayableTetrisArea extends JPanel{
+public class PlayableTetrisArea extends JPanel{//test 
 	JPanel panel;
 	int width;
 	int height; 
