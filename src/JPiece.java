@@ -37,7 +37,7 @@ public class JPiece extends MovablePiece{
 		case ORIENTATION_RIGHT:
 			blocks[1] = new Block(x-width, y, width, height, Color.BLUE);
 			blocks[2] = new Block(x+width, y, width, height, Color.BLUE);
-			blocks[3] = new Block(x-width, y+height, width, height, Color.BLUE);
+			blocks[3] = new Block(x-width, y-height, width, height, Color.BLUE);
 			
 			blocks[1].createBlock(g);
 			blocks[2].createBlock(g);
@@ -48,7 +48,7 @@ public class JPiece extends MovablePiece{
 		case ORIENTATION_LEFT:
 			blocks[1] = new Block(x-width, y, width, height, Color.BLUE);
 			blocks[2] = new Block(x+width, y, width, height, Color.BLUE);
-			blocks[3] = new Block(x+width, y-height, width, height, Color.BLUE);
+			blocks[3] = new Block(x+width, y+height, width, height, Color.BLUE);
 			
 			blocks[1].createBlock(g);
 			blocks[2].createBlock(g);

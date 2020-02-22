@@ -1,20 +1,27 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class MainGameLoop {
+public class MainGameLoop{
 	MovablePiece []tetrominos_list = new MovablePiece[7];
 	int timer = 0;
 	GameWindow game_window;
-	PlayableTetrisArea playable_tetris_area;
+	private PlayableTetrisArea playable_tetris_area;
 	Border bottom_border;
 	Border left_border;
 	Border top_border;
 	Border right_border;
+	MovablePiece tetromino;
+	
+	//main lööp
 	public static void main(String[] args) {
 		MainGameLoop mgl = new MainGameLoop();
 		mgl.mainGameLoop();
 	}
 	
+//	bottom left 100,560
+//	top left 100,160
+//	bottom right 300,100
+//	top right300,290
 	public void mainGameLoop() {
 	//set up playing area DONT EDIT THIS PART IF YOU DONT UNDERSTAND THE ALL THE SOURCE CODE
 		game_window = new GameWindow();
@@ -23,6 +30,8 @@ public class MainGameLoop {
 		left_border = new Border(bottom_border.x, bottom_border.y-400, 10, 400);
 		top_border = new Border(bottom_border.x, left_border.y, bottom_border.width, bottom_border.height);//this one just marks the top
 		right_border = new Border((bottom_border.x+bottom_border.width)-10, left_border.y, left_border.width, left_border.height);
+
+		
 		//create array
 		createTetrominosList(playable_tetris_area, bottom_border, right_border, left_border);
 
@@ -30,39 +39,37 @@ public class MainGameLoop {
 		game_window.addPanel(playable_tetris_area);
 		
 		//pick tetromino from array
-		MovablePiece tetromino = pickATetromino();
+		tetromino = pickATetromino();
 		
 		//add tetromino to panel
 		playable_tetris_area.addPiece(tetromino);
+		//DO NOT EDIT THE BORDERS, pls...
 		playable_tetris_area.addBorders(bottom_border, left_border, right_border, top_border);
 		playable_tetris_area.addKeyListener(tetromino);
 		playable_tetris_area.grabFocus();
-		
+
 		while(true) {
 			try {Thread.sleep(1000);} catch (Exception e) {}
 			playable_tetris_area.mp.printYValue();
 			tetromino.fall();
-			
+			playable_tetris_area.repaint();
 			//if tetromino hit the ground replace it with static blocks and create a new one for the player
 			if(tetromino.checkIfAnyBlockBottomCollided() == true || tetromino.checkIfOneBlockBottomSideWillCollide() == true) {
 				if(timer == 1) {
-					for(int i = 0; i < tetromino.blocks.length;) {
-						playable_tetris_area.block_list.add(new Block(tetromino.blocks[i].x, tetromino.blocks[i].y, tetromino.blocks[i].width, tetromino.blocks[i].height, tetromino.blocks[i].c));
-//						System.out.println("static block length: " + playable_tetris_area.block_list.size()); 
-						i++;
-					}
+					playable_tetris_area.addBlockToHashMap(tetromino);
+					playable_tetris_area.removeKeyListener(tetromino);//old peice is removed					
+					
 					tetromino.y = 180;
 					tetromino.x = 180;
-					playable_tetris_area.removeKeyListener(tetromino);
 					tetromino = pickATetromino();
 					playable_tetris_area.addPiece(tetromino);
-					playable_tetris_area.addKeyListener(tetromino);
+					playable_tetris_area.addKeyListener(tetromino);//add new peice
 					timer = 0;
-				}
-				
+				}	
 				timer++;
+				playable_tetris_area.runLineChecker(right_border.height);
+				playable_tetris_area.repaint();
 			}
-			playable_tetris_area.repaint();
 		}
 	}
 	

@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 public class Block {
 	int x;
 	int y;
@@ -18,50 +20,48 @@ public class Block {
 		g.fill3DRect(x, y, width, height, true);
 	}
 	
-	public boolean willBlockRightSideCollideWith(ArrayList<Block> allStaticBlocks) {
-		int i = 0;
-		while(allStaticBlocks.size() > i) {
-//			System.out.println("check" + (i+1));
-			if (this.x + this.width < allStaticBlocks.get(i).x + allStaticBlocks.get(i).width &&
-			this.x + (this.width*2) > allStaticBlocks.get(i).x &&
-			this.y < allStaticBlocks.get(i).y + allStaticBlocks.get(i).height &&
-			this.y + this.height > allStaticBlocks.get(i).y) {
-				System.out.println(true);
+	public boolean willBlockRightSideCollideWith(HashMap<String, Block> allStaticBlocks) {
+		Iterator<String> i = allStaticBlocks.keySet().iterator();
+		while( i.hasNext() ) {
+			String key = i.next();
+			Block b = (Block) allStaticBlocks.get(key);
+			if (this.x + this.width < b.x + b.width &&
+			this.x + (this.width*2) > b.x &&
+			this.y < b.y + b.height &&
+			this.y + this.height > b.y) {
+					System.out.println(true);
+					return true;
+				}
+		}
+		return false;
+	}
+
+	public boolean willBlockBottomSideCollideWith(HashMap<String, Block> allStaticBlocks) {
+		Iterator<String> i = allStaticBlocks.keySet().iterator();
+		while( i.hasNext() ) {
+			String key = i.next();
+			Block b = (Block) allStaticBlocks.get(key);
+			if (this.x < b.x + b.width &&
+			this.x + this.width > b.x &&
+			this.y + this.height< b.y + b.height &&
+			this.y + (this.height*2)> b.y) {
 				return true;
 			}
-			i++;
 		}
 		return false;
 	}
 	
-	public boolean willBlockBottomSideCollideWith(ArrayList<Block> allStaticBlocks) {
-		int i = 0;
-		while(allStaticBlocks.size() > i) {
-//			System.out.println("check" + (i+1));
-			if (this.x < allStaticBlocks.get(i).x + allStaticBlocks.get(i).width &&
-			this.x + this.width > allStaticBlocks.get(i).x &&
-			this.y + this.height< allStaticBlocks.get(i).y + allStaticBlocks.get(i).height &&
-			this.y + (this.height*2)> allStaticBlocks.get(i).y) {
-//				System.out.println(true);
+	public boolean willBlockLeftSideCollideWith(HashMap<String, Block> allStaticBlocks) {
+		Iterator<String> i = allStaticBlocks.keySet().iterator();
+		while( i.hasNext() ) {
+			String key = i.next();
+			Block b = (Block) allStaticBlocks.get(key);
+			if (this.x - this.width< b.x + b.width &&
+			this.x > b.x &&
+			this.y < b.y + b.height &&
+			this.y + this.height > b.y) {
 				return true;
 			}
-			i++;
-		}
-		return false;
-	}
-	
-	public boolean willBlockLeftSideCollideWith(ArrayList<Block> allStaticBlocks) {
-		int i = 0;
-		while(allStaticBlocks.size() > i) {
-//			System.out.println("check" + (i+1));
-			if (this.x - this.width< allStaticBlocks.get(i).x + allStaticBlocks.get(i).width &&
-			this.x > allStaticBlocks.get(i).x &&
-			this.y < allStaticBlocks.get(i).y + allStaticBlocks.get(i).height &&
-			this.y + this.height > allStaticBlocks.get(i).y) {
-				System.out.println(true);
-				return true;
-			}
-			i++;
 		}
 		return false;
 	}
