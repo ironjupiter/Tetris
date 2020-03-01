@@ -70,10 +70,10 @@ public abstract class MovablePiece implements KeyListener{
 	}
 	
 	public boolean checkIfOneBlockBottomSideWillCollide() {
-		if(blocks[0].willBlockBottomSideCollideWith(pta.block_list) == true 
-		|| blocks[1].willBlockBottomSideCollideWith(pta.block_list) == true
-		|| blocks[2].willBlockBottomSideCollideWith(pta.block_list) == true
-		|| blocks[3].willBlockBottomSideCollideWith(pta.block_list) == true) {
+		if(blocks[0].willBlockBottomSideCollideWith(pta.placed_blcok_list) == true 
+		|| blocks[1].willBlockBottomSideCollideWith(pta.placed_blcok_list) == true
+		|| blocks[2].willBlockBottomSideCollideWith(pta.placed_blcok_list) == true
+		|| blocks[3].willBlockBottomSideCollideWith(pta.placed_blcok_list) == true) {
 			return true;
 		}else {
 			return false;
@@ -81,10 +81,10 @@ public abstract class MovablePiece implements KeyListener{
 	}
 	
 	public boolean checkIfOneBlockRightSideWillCollide() {
-		if(blocks[0].willBlockRightSideCollideWith(pta.block_list) == true 
-		|| blocks[1].willBlockRightSideCollideWith(pta.block_list) == true
-		|| blocks[2].willBlockRightSideCollideWith(pta.block_list) == true
-		|| blocks[3].willBlockRightSideCollideWith(pta.block_list) == true) {
+		if(blocks[0].willBlockRightSideCollideWith(pta.placed_blcok_list) == true 
+		|| blocks[1].willBlockRightSideCollideWith(pta.placed_blcok_list) == true
+		|| blocks[2].willBlockRightSideCollideWith(pta.placed_blcok_list) == true
+		|| blocks[3].willBlockRightSideCollideWith(pta.placed_blcok_list) == true) {
 			return true;
 		}else {
 			return false;
@@ -92,22 +92,23 @@ public abstract class MovablePiece implements KeyListener{
 	}
 	
 	public boolean checkIfOneBlockLeftSideWillCollide() {
-		if(blocks[0].willBlockLeftSideCollideWith(pta.block_list) == true 
-		|| blocks[1].willBlockLeftSideCollideWith(pta.block_list) == true
-		|| blocks[2].willBlockLeftSideCollideWith(pta.block_list) == true
-		|| blocks[3].willBlockLeftSideCollideWith(pta.block_list) == true) {
+		if(blocks[0].willBlockLeftSideCollideWith(pta.placed_blcok_list) == true 
+		|| blocks[1].willBlockLeftSideCollideWith(pta.placed_blcok_list) == true
+		|| blocks[2].willBlockLeftSideCollideWith(pta.placed_blcok_list) == true
+		|| blocks[3].willBlockLeftSideCollideWith(pta.placed_blcok_list) == true) {
 			return true;
 		}else {
 			return false;
 		}
 	}
 	
-	
+	/*THESE ARE KEY EVENTS
+	 * DONT CHANGE THE ALREADY 
+	 * EXSISTING ONES UNLESS 
+	 * YOU ARE OPTIMIZING THEM*/
 	@Override
 	public void keyPressed(KeyEvent e) {
-		
 			switch(e.getKeyCode()) {
-			
 				case KeyEvent.VK_W:
 				case KeyEvent.VK_ENTER:
 				case KeyEvent.VK_UP:
@@ -149,9 +150,87 @@ public abstract class MovablePiece implements KeyListener{
 						fall();
 						pta.repaint();
 						break;
+						
+					case KeyEvent.VK_SPACE:
+						hardDrop();
+					break;
 				}
-			
 		}
+	
+	private void hardDrop() {
+		System.out.println("starting hard drop tests");
+		int virtrual_y = y;
+		boolean has_block_dropped = false; 
+		while(virtrual_y <= bottom_border.y) {
+			System.out.println("checking if any other block gets in way");
+			if(areBlocksUnderThisPeice(virtrual_y) == true) {
+				System.out.println("block got in way");
+				this.y = virtrual_y;//move block if this is found true
+				has_block_dropped = true;
+				break;
+			}
+			virtrual_y+= height;
+		}
+		
+		System.out.println("dropping it on very bottom");
+		if(has_block_dropped == false) {//true = don't do it& false = JUST DO IT
+			moveBlockToBottom();
+		}
+	}
+	
+	private boolean areBlocksUnderThisPeice(int virtrual_y) {
+		if(runBottomHitTestWithDummyBlcok(makeDummyPiece(virtrual_y))) {
+			return true;
+		}
+		return false;
+	};
+	
+	private Block[] makeDummyPiece(int virtrual_y) {
+		Block[] dummy_blocks = new Block[4];
+		for(int i = 0; i < dummy_blocks.length; i++) {
+			dummy_blocks[i] = blocks[i];
+			dummy_blocks[i].y = virtrual_y;
+			if(blocks[i].y > this.y) {
+				
+				int how_much_lower = blocks[i].y + this.y;
+				int how_much_to_change_y = how_much_lower/height;
+				dummy_blocks[i].y = dummy_blocks[i].y + how_much_to_change_y;
+			}else if(blocks[i].y < this.y) {
+				
+				int how_much_higher = blocks[0].y - this.y;
+				int how_much_to_change_y = how_much_higher/height;
+				dummy_blocks[i].y = dummy_blocks[i].y + how_much_to_change_y;
+			}else {
+				dummy_blocks[i].y = dummy_blocks[i].y;
+			}
+		}
+		return dummy_blocks;
+	}
+	
+	private void moveBlockToBottom() {
+		int virtrual_y = bottom_border.y;
+
+		int blocks_directly_under_main_block = 1;
+		for(int i = 0; i < blocks.length; i++) {
+			if(blocks[i].y > this.y && blocks[i].x == this.x) {
+				blocks_directly_under_main_block++;
+			}
+		}
+		this.y = virtrual_y - (blocks_directly_under_main_block * height);
+	}
+	
+	private boolean runBottomHitTestWithDummyBlcok(Block[] dummy_blocks) {
+		if(dummy_blocks[0].willBlockBottomSideCollideWith(pta.placed_blcok_list) == true 
+		|| dummy_blocks[1].willBlockBottomSideCollideWith(pta.placed_blcok_list) == true
+		|| dummy_blocks[2].willBlockBottomSideCollideWith(pta.placed_blcok_list) == true
+		|| dummy_blocks[3].willBlockBottomSideCollideWith(pta.placed_blcok_list) == true) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	//trash that i can't get rid of :\
 	@Override
 	public void keyReleased(KeyEvent e) {}
 	

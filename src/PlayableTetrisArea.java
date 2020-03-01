@@ -13,7 +13,7 @@ public class PlayableTetrisArea extends JPanel{//test
 	MovablePiece mp;
 	GameWindow gw;
 	Border []borderList = new Border[4];
-	HashMap<String, Block> block_list = new HashMap<String, Block>();
+	HashMap<String, Block> placed_blcok_list = new HashMap<String, Block>();
 	
 	public PlayableTetrisArea(GameWindow g) {
 		height = g.height;
@@ -35,11 +35,11 @@ public class PlayableTetrisArea extends JPanel{//test
 		createAllBorders(g);
 	}
 	private void createAllStaticBlocks(Graphics g) {
-		Iterator<String> i = block_list.keySet().iterator();
+		Iterator<String> i = placed_blcok_list.keySet().iterator();
 		while( i.hasNext() ) {
 			String key = i.next();
 			if(key != null) {
-				Block b = block_list.get(key);
+				Block b = placed_blcok_list.get(key);
 				b.createBlock(g);
 			}
 		}
@@ -48,8 +48,8 @@ public class PlayableTetrisArea extends JPanel{//test
 	public void addBlockToHashMap(MovablePiece mp) {
 		for(int i = 0; i < mp.blocks.length;) {
 			String key = mp.blocks[i].x+ "," +  mp.blocks[i].y;
-			System.out.println("block placed at, " + key);
-			block_list.put(key, new Block(mp.blocks[i].x, mp.blocks[i].y, mp.blocks[i].width, mp.blocks[i].height, mp.blocks[i].c));
+//			System.out.println("block placed at, " + key);
+			placed_blcok_list.put(key, new Block(mp.blocks[i].x, mp.blocks[i].y, mp.blocks[i].width, mp.blocks[i].height, mp.blocks[i].c));
 			i++;
 		}
 	}
@@ -64,9 +64,9 @@ public class PlayableTetrisArea extends JPanel{//test
 		String []hashcodes = new String[10];
 		while(x_tp_check < right_egde) {	
 			key = x_tp_check + "," + y_level;
-			if(block_list.get(key) != null) {
+			if(placed_blcok_list.get(key) != null) {
 				hashcodes[loops] = key;
-				System.out.println("block at "+ key);
+//				System.out.println("block at "+ key);
 			}else{
 				hashcodes[loops] = null;
 			}
@@ -77,7 +77,7 @@ public class PlayableTetrisArea extends JPanel{//test
 	}
 																	//deal with this later :|
 	private DroppingLines ifLineFoundTrueDeleteLineIfNotRetunIt(int y_level_to_check, int num_of_dropped_lines) {
-		System.out.println("finding line");
+//		System.out.println("finding line");
 		String [] hashcodes = checkTheNumOfBlocksInLine(y_level_to_check);
 		
 		boolean is_complete_line = true;
@@ -87,21 +87,21 @@ public class PlayableTetrisArea extends JPanel{//test
 		}
 		
 		if(is_complete_line) {
-			System.out.println("line found and removed");
+//			System.out.println("line found and removed");
 			for(int i = 0; i < hashcodes.length; i++) {
-				block_list.remove(hashcodes[i]);
+				placed_blcok_list.remove(hashcodes[i]);
 			}
-			System.out.println("line is full&deleted");
+//			System.out.println("line is full&deleted");
 			return null;
 		}else{
 			DroppingLines line_to_drop = new DroppingLines(num_of_dropped_lines);
 			for(int i = 0; hashcodes.length > i; i++) {
 				if(hashcodes[i] != null) {
-					line_to_drop.addBlock(block_list.get(hashcodes[i]));
+					line_to_drop.addBlock(placed_blcok_list.get(hashcodes[i]));
 					line_to_drop.list_of_keys_in_line.add(hashcodes[i]);
 				}
 			}
-			System.out.println("line is incomplete");
+//			System.out.println("line is incomplete");
 			return line_to_drop;
 		}
 	}
@@ -176,7 +176,7 @@ public class PlayableTetrisArea extends JPanel{//test
 	}
 	
 	public void modifyBlockYAxis(String key, int times_to_drop) {
-		block_list.get(key).y = block_list.get(key).y + (block_list.get(key).height*times_to_drop);
+		placed_blcok_list.get(key).y = placed_blcok_list.get(key).y + (placed_blcok_list.get(key).height*times_to_drop);
 	}
 	
 }

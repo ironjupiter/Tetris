@@ -18,9 +18,9 @@ public class DroppingLines {
 			pta.modifyBlockYAxis(list_of_keys_in_line.get(i), times_to_drop);//drop			
 			String new_key = list_of_blocks_in_line.get(i).x + "," + list_of_blocks_in_line.get(i).y;//new key
 			
-			pta.block_list.remove(list_of_keys_in_line.get(i));//remove old key
-			pta.block_list.put(new_key, list_of_blocks_in_line.get(i));//add new key/block
-			System.out.print("Block:" + i + " :at y: " + pta.block_list.get(new_key).y);//print
+			pta.placed_blcok_list.remove(list_of_keys_in_line.get(i));//remove old key
+			pta.placed_blcok_list.put(new_key, list_of_blocks_in_line.get(i));//add new key/block
+			System.out.print("Block:" + i + " :at y: " + pta.placed_blcok_list.get(new_key).y);//print
 			i++;
 		}
 	}

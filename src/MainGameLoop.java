@@ -14,6 +14,8 @@ public class MainGameLoop{
 	
 	//main lööp
 	public static void main(String[] args) {
+		System.out.println("when hard dropping do it inbetween the natrual drops so i won't glicth");
+		try {Thread.sleep(1000);}catch (Exception e) {}
 		MainGameLoop mgl = new MainGameLoop();
 		mgl.mainGameLoop();
 	}
@@ -47,28 +49,35 @@ public class MainGameLoop{
 		playable_tetris_area.addBorders(bottom_border, left_border, right_border, top_border);
 		playable_tetris_area.addKeyListener(tetromino);
 		playable_tetris_area.grabFocus();
-
+		
+		int repaint_speed_millis = 100;
+		int required_num_for_calculations = 100;
+		int x = 0;
 		while(true) {
-			try {Thread.sleep(1000);} catch (Exception e) {}
-			playable_tetris_area.mp.printYValue();
-			tetromino.fall();
+			try {Thread.sleep(repaint_speed_millis);}catch (Exception e) {}
 			playable_tetris_area.repaint();
-			//if tetromino hit the ground replace it with static blocks and create a new one for the player
-			if(tetromino.checkIfAnyBlockBottomCollided() == true || tetromino.checkIfOneBlockBottomSideWillCollide() == true) {
-				if(timer == 1) {
-					playable_tetris_area.addBlockToHashMap(tetromino);
-					playable_tetris_area.removeKeyListener(tetromino);//old peice is removed					
-					
-					tetromino.y = 180;
-					tetromino.x = 180;
-					tetromino = pickATetromino();
-					playable_tetris_area.addPiece(tetromino);
-					playable_tetris_area.addKeyListener(tetromino);//add new peice
-					timer = 0;
-				}	
-				timer++;
-				playable_tetris_area.runLineChecker(right_border.height);
-				playable_tetris_area.repaint();
+			x+=10;
+			if(x == repaint_speed_millis) {
+				x = 0;
+				playable_tetris_area.mp.printYValue();
+				tetromino.fall();
+				//if tetromino hit the ground replace it with static blocks and create a new one for the player
+				if(tetromino.checkIfAnyBlockBottomCollided() == true || tetromino.checkIfOneBlockBottomSideWillCollide() == true) {
+					if(timer == 1) {
+						playable_tetris_area.addBlockToHashMap(tetromino);
+						playable_tetris_area.removeKeyListener(tetromino);//old peice is removed					
+						
+						tetromino.y = 180;
+						tetromino.x = 180;
+						tetromino = pickATetromino();
+						playable_tetris_area.addPiece(tetromino);
+						playable_tetris_area.addKeyListener(tetromino);//add new peice
+						timer = 0;
+					}	
+					timer++;
+					playable_tetris_area.runLineChecker(right_border.height);
+					playable_tetris_area.repaint();
+				}
 			}
 		}
 	}
